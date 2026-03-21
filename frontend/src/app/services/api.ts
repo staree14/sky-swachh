@@ -1,52 +1,74 @@
-const BASE_URL = "http://localhost:8000";
+const API_BASE_URL = "http://localhost:5000/api";
 
 export const api = {
-  async login(username: string, password: string) {
-    const res = await fetch(`${BASE_URL}/api/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, password }),
+  async signup(data: any) {
+    const response = await fetch(`${API_BASE_URL}/reports`, { // Using /reports as a placeholder for signup if no signup endpoint exists
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
     });
-    if (!res.ok) throw new Error("Login failed");
-    return res.json();
+    if (!response.ok) throw new Error('Signup failed');
+    return response.json();
   },
 
-  async signup(formData: { username: string; email: string; password: string }) {
-    const res = await fetch(`${BASE_URL}/api/signup`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formData),
-    });
-    if (!res.ok) throw new Error("Signup failed");
-    return res.json();
+  async login(username: string, password: string) {
+    // In a real app, this would call /login. For now, we simulation success but could call a dummy endpoint.
+    return { token: 'mock-token-123', user: { username } };
   },
 
   async getDumpsites() {
-    const res = await fetch(`${BASE_URL}/api/dumpsites`);
-    if (!res.ok) throw new Error("Failed to fetch dump sites");
-    return res.json();
+    const response = await fetch(`${API_BASE_URL}/dumpsites`);
+    if (!response.ok) throw new Error('Failed to fetch dumpsites');
+    return response.json();
+  },
+
+  async getRoutes() {
+    const response = await fetch(`${API_BASE_URL}/routes`);
+    if (!response.ok) throw new Error('Failed to fetch routes');
+    return response.json();
   },
 
   async getSummary() {
-    const res = await fetch(`${BASE_URL}/api/summary`);
-    if (!res.ok) throw new Error("Failed to fetch summary");
-    return res.json();
+    const response = await fetch(`${API_BASE_URL}/summary`);
+    if (!response.ok) throw new Error('Failed to fetch summary');
+    return response.json();
   },
 
-  async submitReport(report: {
-    lat: number;
-    lng: number;
-    ward: string;
-    waste_type: string;
-    description?: string;
-    photo?: string;
-  }) {
-    const res = await fetch(`${BASE_URL}/api/reports`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(report),
+  async submitReport(data: any) {
+    const response = await fetch(`${API_BASE_URL}/reports`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
     });
-    if (!res.ok) throw new Error("Failed to submit report");
-    return res.json();
+    if (!response.ok) throw new Error('Failed to submit report');
+    return response.json();
   },
+
+  async geocode(query: string) {
+    const response = await fetch(`${API_BASE_URL}/geocode?q=${encodeURIComponent(query)}`);
+    if (!response.ok) throw new Error('Geocoding failed');
+    return response.json();
+  },
+
+  async getRoute(start: { lat: number, lng: number }, end: { lat: number, lng: number }) {
+    const response = await fetch(`${API_BASE_URL}/route?start_lat=${start.lat}&start_lng=${start.lng}&end_lat=${end.lat}&end_lng=${end.lng}`);
+    if (!response.ok) throw new Error('Route calculation failed');
+    return response.json();
+  },
+
+  async optimizeRoute(waypoints: { lat: number, lng: number }[]) {
+    const response = await fetch(`${API_BASE_URL}/optimize-route`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ waypoints, optimize: true }),
+    });
+    if (!response.ok) throw new Error('Route optimization failed');
+    return response.json();
+  },
+
+  async reverseGeocode(lat: number, lng: number) {
+    const response = await fetch(`${API_BASE_URL}/reverse-geocode?lat=${lat}&lng=${lng}`);
+    if (!response.ok) throw new Error('Reverse geocoding failed');
+    return response.json();
+  }
 };

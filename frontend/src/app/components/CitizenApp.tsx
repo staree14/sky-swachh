@@ -5,7 +5,7 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Badge } from "./ui/badge";
 import { mockCitizenReport } from "../data/mockData";
-// import { api } from "../services/api";
+import { api } from "../services/api";
 
 export function CitizenApp() {
   const [step, setStep] = useState<'form' | 'tracking'>('form');
@@ -19,14 +19,39 @@ export function CitizenApp() {
   const [reportId, setReportId] = useState("");
 
   const handleGeoTag = () => {
+    if (!navigator.geolocation) {
+      alert("Geolocation is not supported by your browser");
+      return;
+    }
+
     setIsGeotagging(true);
-    // Simulate geolocation
-    setTimeout(() => {
-      setLocation('100 Feet Road, Indiranagar, Bengaluru - 560038');
-      setCoords({ lat: 12.9352, lng: 77.6245 });
-      setWasteType('Mixed Waste');
-      setIsGeotagging(false);
-    }, 1500);
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+        setCoords({ lat: latitude, lng: longitude });
+        try {
+          const data = await api.reverseGeocode(latitude, longitude);
+          console.log("Reverse geocode response:", data);
+          if (data && data.address) {
+            setLocation(data.address);
+          } else {
+            console.warn("No address in response:", data);
+            setLocation(`${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
+          }
+        } catch (error) {
+          console.error("Reverse geocoding failed:", error);
+          setLocation(`${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
+        } finally {
+          setIsGeotagging(false);
+        }
+      },
+      (error) => {
+        console.error("Geolocation error:", error);
+        setIsGeotagging(false);
+        alert("Failed to get your location. Please ensure location services are enabled.");
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+    );
   };
 
   const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {

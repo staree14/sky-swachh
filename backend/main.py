@@ -354,6 +354,45 @@ async def geocode(q: str):
     except Exception as e:
         return {"error": str(e)}
 
+@app.get("/api/reverse-geocode")
+async def reverse_geocode(lat: float, lng: float):
+    """
+    Reverse geocodes coordinates using Photon (OSM-based).
+    """
+    url = f"https://photon.komoot.io/reverse?lon={lng}&lat={lat}"
+    
+    try:
+        response = requests.get(url, timeout=5)
+        response.raise_for_status()
+        data = response.json()
+        
+        if data.get("features"):
+            feature = data["features"][0]
+            props = feature.get("properties", {})
+            print(f"Reverse geocode properties: {props}")
+            
+            # Construct a robust address
+            parts = []
+            # Order: Name -> Street -> Locality/District -> City -> State -> Postcode
+            if props.get("name"): parts.append(props["name"])
+            if props.get("street"): parts.append(props["street"])
+            if props.get("locality"): parts.append(props["locality"])
+            elif props.get("district"): parts.append(props["district"])
+            if props.get("city"): parts.append(props["city"])
+            if props.get("state"): parts.append(props["state"])
+            if props.get("postcode"): parts.append(props["postcode"])
+            
+            address = ", ".join(parts)
+            result = {"address": address or "Unknown Location", "details": props}
+            print(f"Returning address: {address}")
+            return result
+            
+        print("No features found in reverse geocode")
+        return {"address": "Unknown Location", "details": {}}
+    except Exception as e:
+        print(f"Reverse geocoding error: {e}")
+        return {"error": str(e)}
+
 @app.get("/api/route")
 async def get_simple_route(start_lat: float, start_lng: float, end_lat: float, end_lng: float):
     """

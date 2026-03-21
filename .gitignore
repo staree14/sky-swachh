@@ -10,7 +10,10 @@ build
 .DS_Store
 .vscode
 .idea
-
 # Firebase credentials — never commit
 serviceAccount.json
 *serviceAccount*.json
+.vite
+.next
+*.pyc
+test_geocode.py
