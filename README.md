@@ -16,11 +16,20 @@
 
 ## 📱 Sky Swachh Citizen App
 
-![Citizen App Space](space_app.jpeg)
+<img src="space_app.jpeg" alt="Citizen App Space" width="170" align="left" style="margin-right: 20px;" />
 
 **[Sky Swachh Citizen App Repository](https://github.com/aniksha23/Sky-Swachh---Citizen-App)**
 
-CitizenApp gamifies civic engagement in Bengaluru. Snap photos of illegal dump sites with automatic GPS and time-stamps. AI-powered ML verifies waste in seconds. Verified reports earn 50 points, unlock ranks, and alert cleanup authorities instantly. Compete on leaderboards, become an Environmental Hero, and make cities cleaner together.
+CitizenApp gamifies civic engagement in Bengaluru by empowering residents to take action against illegal waste dumping. The app acts as the primary data collection tool for the Sky Swachh ecosystem, seamlessly feeding citizen reports directly into the main map dashboard.
+
+**Core App Features:**
+- **📍 Smart Location Tracking**: Snap photos of illegal dump sites with automatic GPS tagging and time-stamps for precise location mapping.
+- **⚡ AI Verification**: Integrated AI-powered machine learning verifies waste presence in seconds before the report is logged.
+- **🎮 Gamification System**: Verified reports earn 50 points, unlocking ranks and badges to encourage continuous community participation.
+- **🏆 Leaderboards**: Compete on local leaderboards, become an Environmental Hero, and make cities cleaner together.
+- **🚨 Instant Alerts**: Automatically notifies cleanup authorities and syncs with the main municipal dashboard for prompt action.
+
+<br clear="both"/>
 
 ## 🛠️ Tech Stack
 
